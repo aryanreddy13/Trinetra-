@@ -7,12 +7,17 @@ export default function ArtifactsAnalyticsPage({ currentData }) {
   // Check if processed video analysis data is available
   const hasProcessedData = Boolean(
     currentData && 
-    (currentData.total_zones > 0 || (currentData.incidents && currentData.incidents.length > 0))
+    (
+      currentData.total_zones > 0 || 
+      (currentData.incidents && currentData.incidents.length > 0) ||
+      (currentData.events && currentData.events.length > 0) ||
+      (currentData.zones && currentData.zones.length > 0)
+    )
   );
 
   // Extract zones and total desk count from currentData or default to detected total
-  const totalDesks = currentData?.total_zones || currentData?.detected_zones || 12;
-  const incidentsList = currentData?.incidents || [];
+  const totalDesks = currentData?.total_zones || currentData?.detected_zones || currentData?.zones?.length || 12;
+  const incidentsList = currentData?.incidents || currentData?.events || [];
 
   // Determine dynamic Grid layout (rows & cols) based on processed video desks
   const columns = totalDesks > 8 ? 4 : totalDesks > 4 ? 3 : 2;

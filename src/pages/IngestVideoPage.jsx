@@ -53,26 +53,38 @@ export default function IngestVideoPage({ apiBase = '', onStartJob, setCurrentPa
 
   const startWebcam = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }, 
+        audio: false 
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      
+      let mimeType = 'video/webm;codecs=vp8';
+      if (!MediaRecorder.isTypeSupported(mimeType)) {
+        mimeType = 'video/webm';
+      }
+
+      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType });
       chunksRef.current = [];
 
       mediaRecorderRef.current.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
+        if (e.data && e.data.size > 0) {
+          chunksRef.current.push(e.data);
+        }
       };
 
       mediaRecorderRef.current.onstop = async () => {
-        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-        const file = new File([blob], "live_surveillance.webm", { type: 'video/webm' });
+        const blob = new Blob(chunksRef.current, { type: mimeType });
+        const file = new File([blob], "live_surveillance.webm", { type: mimeType });
         setSelectedFile(file);
         // Stop stream
         stream.getTracks().forEach(track => track.stop());
       };
 
-      mediaRecorderRef.current.start();
+      // Flush timeslice every 250ms to ensure WebM keyframes are preserved
+      mediaRecorderRef.current.start(250);
       setRecording(true);
     } catch (err) {
       alert("Could not access camera: " + err.message);

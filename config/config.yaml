@@ -35,8 +35,8 @@ preprocessing:
 
 zone_calibration:
   calibration_window_percent: 0.20
-  calibration_window_frames: 100
-  calibration_confidence_threshold: 0.08
+  calibration_window_frames: 30
+  calibration_confidence_threshold: 0.05
   centroid_stability_threshold: 35.0
   padding_ratio: 0.08
   padding_margin: 6
@@ -50,7 +50,7 @@ zone_calibration:
   tile_cols: 2
   upscale_factor: 2.0
   max_calib_sample_frames: 10
-  min_frame_fraction: 0.20
+  min_frame_fraction: 0.05
 
 motion_detection:
   algorithm: mog2        # mog2 | knn | optical_flow
@@ -73,8 +73,8 @@ motion_detection:
 
 object_detection:
   model_path: "best.pt"
-  confidence_threshold: 0.08
-  device: "cuda"              # cuda | cpu | auto
+  confidence_threshold: 0.05
+  device: "auto"              # cuda | cpu | auto
   classes_of_interest: ["person", "phone", "cell phone", "mobile phone", "chit", "hand", "peeking", "supplement-passing", "laptop", "book"]
   sahi:
     enabled: true
