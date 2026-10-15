@@ -22,7 +22,7 @@ export default function Topbar({ currentPage, setCurrentPage, onSearch, user, on
     <header className="topbar">
       <div className="topbar-left">
         <div className="topbar-brand-title" onClick={() => setCurrentPage('artifacts')} style={{ cursor: 'pointer' }}>
-          DRISHTI AI
+          TRINETRA AI
         </div>
       </div>
 
